@@ -1,6 +1,6 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 import { ethers } from "hardhat";
-import { minStakingBoostAmount as minStakingBoostAmountConfig, rewardRatioNumerator as rewardRatioNumeratorConfig, stakingTokenCap as stakingTokenCapConfig } from "../../config/config";
+import { minStakingBoostAmount as minStakingBoostAmountConfig, rewardRatioNumerator as rewardRatioNumeratorConfig, stakingTokenCap as stakingTokenCapConfig, tiersDurations, tiersMultipliers } from "../../config/config";
 
 const StakingModule = buildModule("StakingModule", (m) => {
   if (!process.env.LCD_ADDRESS) {
@@ -17,6 +17,8 @@ const StakingModule = buildModule("StakingModule", (m) => {
   const minStakingBoostAmount = m.getParameter("_minStakingBoostAmount", minStakingBoostAmountConfig(18n));
 
   const staking = m.contract("Staking", [stakingTokenAddress, rewardRatioNumerator, stakingTokenCap, minStakingBoostAmount]);
+
+  m.call(staking, "setTiers", [tiersDurations, tiersMultipliers]);
 
   return { staking };
 });
